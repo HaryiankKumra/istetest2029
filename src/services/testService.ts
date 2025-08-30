@@ -59,6 +59,7 @@ export const testService = {
     maxTabSwitches: 5,
     isTestActive: true
   }),
+
   // Fisher-Yates shuffle algorithm for randomizing questions
   shuffleQuestions: (questions: TestQuestion[], userId: string): TestQuestion[] => {
     // Use userId as seed for consistent randomization per user
@@ -79,13 +80,16 @@ export const testService = {
     
     return shuffled;
   },
+
   isTestAvailable: (): boolean => {
   const settings = testService.getTestSettings();
   const now = new Date();
   const start = settings.testStartTime;
-  const end = new Date(start.getTime() + 20 * 60 * 1000); // 20 minutes after start
+  const end = new Date(start.getTime() + 20 * 60 * 1000); // 30 minutes after start
+
   return now >= start && now <= end;
 },
+
   getTestEndTime: (): Date => {
     const settings = testService.getTestSettings();
     return new Date(settings.testStartTime.getTime() + 20 * 60 * 1000); // 30 minutes window to start
@@ -259,20 +263,17 @@ export const testService = {
       category: 'Technical'
     },
     {
-  id: '2',
-  question: `What will the following code print in most C-like languages?
-
-int a=5/2;
-printf("%d",a);`,
-  options: [
-    '2',
-    '2.5',
-    '3',
-    'Error'
-  ],
-  correctAnswer: 0,
-  category: 'Technical'
-},
+      id: '2',
+      question: 'What will the following code print in most C-like languages? int a=5/2; printf("%d",a);',
+      options: [
+        '2',
+        '2.5',
+        '3',
+        'Error'
+      ],
+      correctAnswer: 0,
+      category: 'Technical'
+    },
     {
       id: '3',
       question: 'In an ordered array, a search algorithm repeatedly divides the search interval in half until the target element is found or the interval becomes empty. What is the time complexity of this algorithm?',
@@ -359,7 +360,7 @@ printf("%d",a);`,
     },
     {
       id: '10',
-      question: 'What will be the output of the following Java code?\n\nfor(int i=0; i<5; i++){\n    if(i==3) break;\n    System.out.print(i);\n}',
+      question: 'for(int i=0; i<5; i++) {if(i==3) break;  System.out.print(i);',
       options: [
         '012',
         '0123',
@@ -490,10 +491,12 @@ printf("%d",a);`,
       category: 'General'
     },
   ],
+
   getRandomizedTestQuestions: (userId: string): TestQuestion[] => {
     const baseQuestions = testService.getTestQuestions();
     return testService.shuffleQuestions(baseQuestions, userId);
   },
+
   async submitTestResult(testResult: Omit<TestResult, 'id'>): Promise<string> {
     try {
       // Mark test as submitted
@@ -606,5 +609,4 @@ printf("%d",a);`,
       };
     }
   }
-
 };
